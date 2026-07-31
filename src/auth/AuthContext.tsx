@@ -14,8 +14,8 @@ import {
   type AuthUser,
 } from "../api/client"
 
-const ACCESS_KEY = "yetiwise_access_token"
-const REFRESH_KEY = "yetiwise_refresh_token"
+const ACCESS_KEY = "yetiwize_access_token"
+const REFRESH_KEY = "yetiwize_refresh_token"
 
 type AuthContextValue = {
   user: AuthUser | null

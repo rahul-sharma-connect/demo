@@ -153,7 +153,7 @@ export const transactions = [
 
 export const userProfile = {
   name: "Yousuf H Faysal",
-  email: "yousuf@yetiwise.app",
+  email: "yousuf@yetiwize.app",
   initials: "YF",
 }
 
