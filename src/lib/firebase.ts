@@ -17,7 +17,7 @@ let db: Firestore | null = null
 
 function assertConfig() {
   if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
-    throw new Error('Firebase is not configured. Set VITE_FIREBASE_* environment variables.')
+    throw new Error('Firebase is not configured. Set VITE_FIREBASE_* in .env.')
   }
 }
 

@@ -16,7 +16,6 @@ dist-ssr
 .env
 .env.*
 !.env.example
-.env.key
 
 # Firebase service account keys — never commit
 *firebase-adminsdk*.json
@@ -33,4 +32,3 @@ service-account*.json
 *.njsproj
 *.sln
 *.sw?
-.env
