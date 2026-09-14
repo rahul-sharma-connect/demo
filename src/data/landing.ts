@@ -3,60 +3,64 @@ import {
   Smartphone,
   Monitor,
   Shield,
-  Sparkles,
+  LayoutDashboard,
   RefreshCw,
   WifiOff,
-  Users,
   PiggyBank,
   BarChart3,
-  Mic,
+  Wallet,
+  Target,
 } from 'lucide-react'
 import { images } from '@/assets/images'
 
 export const highlights = [
   {
-    title: 'Track every rupee',
-    description: 'Income, expenses, notes, and photos—fast entry without the spreadsheet guilt.',
+    title: 'A clear dashboard',
+    description:
+      'See your balance, recent transactions, and money coming in and going out — all in one quick overview, without digging through multiple screens.',
     image: images.bills,
   },
   {
-    title: 'AI that actually helps',
-    description: 'Soft insights that spot leaks, celebrate progress, and keep money calm.',
-    image: images.thinking,
+    title: 'Track income & expenses',
+    description:
+      'Record every transaction and organize spending into categories like food, shopping, transportation, bills, and entertainment.',
+    image: images.shopping,
   },
   {
-    title: 'Hit goals gently',
-    description: 'Budgets, savings vaults, and milestones that grow with your habits.',
-    image: images.winner,
-  },
-  {
-    title: 'Friends & IOUs',
-    description: 'Give, take, and settle with people you trust—balances stay clear.',
+    title: 'Multiple wallets',
+    description:
+      'Separate cash, bank accounts, digital payments, and savings — each tracked individually while contributing to your total balance.',
     image: images.cash,
+  },
+  {
+    title: 'Budgets & savings goals',
+    description:
+      'Set daily or monthly spending limits and save toward laptops, trips, emergency funds, or any target with visual progress.',
+    image: images.winner,
   },
 ] as const
 
 export const howItWorks = [
   {
     step: '01',
-    title: 'Set up in minutes',
+    title: 'Track your money',
     description:
-      'Pick your currency and language, set a starting balance, and meet your Yeti buddy.',
+      'Record income and expenses, organize transactions into categories, and manage multiple wallets from one clean dashboard.',
     image: images.flying,
   },
   {
     step: '02',
-    title: 'Log life as it happens',
+    title: 'Control your spending',
     description:
-      'Add income or expenses with categories, notes, photos, or voice—offline first.',
+      'Set daily or monthly limits for categories like food or shopping, monitor your progress, and make better decisions before you overspend.',
     image: images.shopping,
   },
   {
     step: '03',
-    title: 'See the full picture',
+    title: 'Build your savings',
     description:
-      'Budgets, cash flow, people, and reports sync to the web dashboard when you are ready.',
-    image: images.thinking,
+      'Create goals for anything you are working toward, add funds gradually, and watch your progress become visual and measurable.',
+    image: images.winner,
   },
 ] as const
 
@@ -76,56 +80,56 @@ export const platforms: {
   {
     id: 'mobile',
     title: 'Mobile app',
-    subtitle: 'iOS & Android — coming soon',
+    subtitle: 'Your everyday expense tracker — iOS & Android coming soon',
     badge: 'Coming soon',
     points: [
       {
         title: 'Offline first',
-        description: 'Log spends on the metro; sync when you reconnect.',
+        description: 'Manage your finances without depending on a constant internet connection.',
         icon: WifiOff,
       },
       {
-        title: 'Voice & photos',
-        description: 'Hold to record notes; attach receipts from camera or gallery.',
-        icon: Mic,
+        title: 'Quick dashboard',
+        description: 'Check your balance and recent activity as naturally as any everyday app.',
+        icon: LayoutDashboard,
       },
       {
-        title: 'PIN & biometrics',
-        description: 'Optional unlock so your money stays private on-device.',
-        icon: Shield,
+        title: 'Multiple wallets',
+        description: 'Track cash, bank, digital payments, and savings separately in one place.',
+        icon: Wallet,
       },
       {
-        title: 'People & savings',
-        description: 'IOUs, vaults, and mood-aware Yeti home screen.',
-        icon: Users,
+        title: 'Savings goals',
+        description: 'Set targets, add funds over time, and follow visual progress toward each goal.',
+        icon: Target,
       },
     ],
   },
   {
     id: 'web',
     title: 'Web dashboard',
-    subtitle: 'Same cloud account — available now for early access',
-    badge: 'Early access',
+    subtitle: 'A bigger view of your money — coming soon',
+    badge: 'Coming soon',
     points: [
       {
         title: 'Full overview',
-        description: 'Balance, cash flow, budgets, and transaction history on a big screen.',
+        description: 'Review balances, wallets, and transaction history on a larger screen.',
         icon: Monitor,
       },
       {
-        title: 'Cloud sync',
-        description: 'Bidirectional sync with the mobile app when it launches.',
-        icon: RefreshCw,
-      },
-      {
-        title: 'Budgets & people',
-        description: 'Manage limits, friends, and playground accounts from the desktop.',
+        title: 'Budget monitoring',
+        description: 'See spending limits and category progress at a glance.',
         icon: PiggyBank,
       },
       {
-        title: 'Reports that stick',
-        description: 'Charts and health signals you will actually want to check.',
+        title: 'Transaction history',
+        description: 'Browse and understand where your money has been going over time.',
         icon: BarChart3,
+      },
+      {
+        title: 'Cloud sync',
+        description: 'Keep your records aligned across devices when you choose to sync.',
+        icon: RefreshCw,
       },
     ],
   },
@@ -133,46 +137,46 @@ export const platforms: {
 
 export const principles = [
   {
-    title: 'Privacy-minded',
-    description: 'We do not sell your financial data. Export or delete anytime.',
-    icon: Shield,
+    title: 'Simple by design',
+    description: 'No overwhelming charts, banking jargon, or features you will never use.',
+    icon: LayoutDashboard,
   },
   {
-    title: 'Offline capable',
-    description: 'Your entries live on-device first, then sync encrypted when online.',
+    title: 'Offline first',
+    description: 'A reliable personal tracker on your phone — no complicated bank integrations required.',
     icon: WifiOff,
   },
   {
-    title: 'Soft AI insights',
-    description: 'Helpful tips without shame—clarity over judgment.',
-    icon: Sparkles,
+    title: 'Not a banking app',
+    description: 'YetiWize helps you manually understand and organize your money — it does not replace your bank.',
+    icon: Shield,
   },
   {
-    title: 'One account everywhere',
-    description: 'Mobile and web share the same cloud profile and preferences.',
+    title: 'For everyday people',
+    description: 'Built for students, professionals, freelancers, and anyone who wants better spending control.',
     icon: Smartphone,
   },
 ] as const
 
 export const faqs = [
   {
+    q: 'What is YetiWize?',
+    a: 'YetiWize is a personal finance and expense tracking app built to make everyday money management simple and clear. It helps you track expenses, record income, manage wallets, control spending, and save toward goals — all from one friendly app.',
+  },
+  {
+    q: 'Is YetiWize a bank?',
+    a: 'No. YetiWize is not a banking app and does not try to replace your bank. It is a personal money management companion that helps you manually understand and organize your finances.',
+  },
+  {
+    q: 'Who is YetiWize for?',
+    a: 'YetiWize is especially useful for students, professionals, freelancers, small earners, and anyone who wants a simpler way to stay aware of their spending and gradually make smarter money decisions.',
+  },
+  {
+    q: 'Does it work offline?',
+    a: 'Yes. YetiWize is designed with an offline-first approach, so you can manage everyday financial records without needing a constant internet connection.',
+  },
+  {
     q: 'When does YetiWize launch?',
-    a: 'The mobile apps are coming soon on the App Store and Google Play. The web dashboard is available now for early cloud accounts—sign up to get ready for launch.',
-  },
-  {
-    q: 'Is my data private?',
-    a: 'Yes. We do not sell personal financial data. Sync is encrypted in transit, and offline-first keeps entries on your device until you sync. Request export or deletion at hello@yetiwize.com.',
-  },
-  {
-    q: 'Will mobile and web stay in sync?',
-    a: 'Yes. One cloud account syncs settings, categories, people, budgets, transactions, and more across devices with soft deletes and last-write-wins conflict handling.',
-  },
-  {
-    q: 'Which currencies and languages are supported?',
-    a: 'Onboarding supports USD, EUR, GBP, JPY, INR, NPR, and more, plus English, Nepali, Hindi, and Spanish—with more to come.',
-  },
-  {
-    q: 'Is this financial advice?',
-    a: 'No. YetiWize is for personal finance tracking and clarity—not tax, investment, or professional financial advice.',
+    a: 'YetiWize is coming soon on the App Store and Google Play. Join the wishlist on this page to get notified when we launch.',
   },
 ] as const

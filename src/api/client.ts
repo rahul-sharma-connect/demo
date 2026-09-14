@@ -11,6 +11,47 @@ export type AuthUser = {
   displayName: string | null
 }
 
+export type PushTargetType = "self" | "user" | "all" | "topic"
+
+export type ScheduledNotification = {
+  id: string
+  userId: string
+  title: string
+  body: string
+  data: Record<string, unknown> | null
+  scheduledAt: string
+  status: string
+  targetType: PushTargetType
+  targetUserId: string | null
+  topic: string | null
+  sentAt: string | null
+  sendResult: unknown
+  createdAt: string
+  updatedAt: string
+}
+
+export type RecurrenceType = "daily" | "weekly" | "monthly"
+
+export type RecurringNotification = {
+  id: string
+  userId: string
+  title: string
+  body: string
+  data: Record<string, unknown> | null
+  recurrence: RecurrenceType
+  timezone: string
+  nextRunAt: string
+  endsAt: string | null
+  status: string
+  targetType: PushTargetType
+  targetUserId: string | null
+  topic: string | null
+  lastSentAt: string | null
+  lastSendResult: unknown
+  createdAt: string
+  updatedAt: string
+}
+
 type RequestOptions = {
   method?: string
   body?: unknown
@@ -67,11 +108,7 @@ export async function apiRequest<T>(
 }
 
 export const authApi = {
-  register: (body: {
-    email: string
-    password: string
-    displayName?: string
-  }) =>
+  register: (body: { email: string; password: string; displayName?: string }) =>
     apiRequest<AuthTokens & { user: AuthUser }>("/auth/register", {
       method: "POST",
       body,
@@ -99,423 +136,148 @@ export const authApi = {
 
 export const usersApi = {
   me: (token: string) =>
-    apiRequest<AuthUser & { createdAt: string; updatedAt: string }>(
-      "/users/me",
-      { token },
-    ),
-  updateMe: (token: string, body: { displayName?: string | null }) =>
-    apiRequest<AuthUser>("/users/me", {
-      method: "PATCH",
-      body,
+    apiRequest<AuthUser & { createdAt: string; updatedAt: string }>("/users/me", {
       token,
     }),
 }
 
-export type AnalyticsPeriod = "7d" | "30d" | "90d" | "ytd"
-
-export type Category = {
-  id: string
-  userId: string
-  name: string
-  icon: string
-  color: string
-  type: string
-  updatedAt: string
-  deletedAt: string | null
-}
-
-export type Person = {
-  id: string
-  userId: string
-  name: string
-  phone: string | null
-  note: string | null
-  updatedAt: string
-  deletedAt: string | null
-}
-
-export type SavingAccount = {
-  id: string
-  userId: string
-  name: string
-  balance: number
-  goal: number
-  icon: string
-  color: string
-  updatedAt: string
-  deletedAt: string | null
-}
-
-export type Budget = {
-  id: string
-  userId: string
-  categoryId: string
-  dailyLimit: number | null
-  monthlyLimit: number | null
-  isEnforced: boolean
-  updatedAt: string
-  deletedAt: string | null
-}
-
-export type Transaction = {
-  id: string
-  userId: string
+export type NotificationPayload = {
   title: string
-  amount: number
-  type: string
-  categoryId: string | null
-  personId: string | null
-  savingsAccountId: string | null
-  note: string | null
-  attachment: string | null
-  icon: string | null
-  createdAt: string
-  updatedAt: string
-  deletedAt: string | null
+  body: string
+  data?: Record<string, string | number | boolean>
+  targetType: PushTargetType
+  targetUserId?: string
+  topic?: string
 }
 
-export type Settings = {
+export type RegisteredDevice = {
   id: string
-  userId: string
-  theme: string
-  language: string
-  currency: string
-  onboardingCompleted: boolean
-  balance: number
-  allowNegativeBalance: boolean
-  homeInputMode: string
-  updatedAt: string
-  deletedAt: string | null
+  token: string
+  platform: string
+  userName: string | null
+  osVersion: string | null
+  manufacturer: string | null
+  model: string | null
+  screenWidth: number | null
+  screenHeight: number | null
+  screenDensity: number | null
+  appVersion: string | null
+  appInstallTime: string | null
+  appUpdateTime: string | null
+  deviceLanguage: string | null
+  timezone: string | null
+  architecture: string | null
+  packageName: string | null
+  createdAt: string | null
+  lastSeenAt: string | null
+  profileRegisteredAt: string | null
 }
 
-export type PlaygroundTransaction = {
+export const devicesApi = {
+  listProfiles: (token: string) =>
+    apiRequest<RegisteredDevice[]>("/devices/profiles", { token }),
+}
+
+export type FeedbackTopic = "feature" | "bug" | "improvement" | "other"
+
+export type FeedbackRecord = {
   id: string
-  userId: string
-  accountId: string
-  title: string
-  amount: number
-  type: string
-  note: string | null
-  icon: string | null
-  categoryName: string | null
-  categoryColor: string | null
-  attachment: string | null
-  createdAt: string
-  updatedAt: string
-  deletedAt: string | null
+  topic: FeedbackTopic
+  message: string
+  deviceId: string | null
+  deviceTokenPreview: string | null
+  platform: string | null
+  appVersion: string | null
+  userName: string | null
+  status: string
+  createdAt: string | null
+  device: RegisteredDevice | null
 }
 
-export type PlaygroundAccount = {
+export const feedbackApi = {
+  list: (token: string) => apiRequest<FeedbackRecord[]>("/feedback", { token }),
+}
+
+export type AnalyticsSummary = {
+  totalEvents: number
+  totalBatches: number
+  sessionStarts: number
+  topScreens: { name: string; count: number }[]
+  topButtons: { name: string; count: number }[]
+  exitScreens: { name: string; count: number }[]
+}
+
+export type AnalyticsEvent = {
+  type: "screen_view" | "button_click" | "app_background" | "session_start"
+  screen?: string
+  button?: string
+  lastScreen?: string
+  at?: string
+}
+
+export type AnalyticsBatchRecord = {
   id: string
-  userId: string
-  name: string
-  type: string
-  balance: number
-  createdAt: string
-  updatedAt: string
-  deletedAt: string | null
-  transactions?: PlaygroundTransaction[]
-}
-
-export function newId() {
-  return crypto.randomUUID()
-}
-
-export function parseTxAttachment(attachment: string | null | undefined): {
-  photo: string | null
-  voiceUri: string | null
-} {
-  if (!attachment) return { photo: null, voiceUri: null }
-  try {
-    const parsed = JSON.parse(attachment) as {
-      photo?: string | null
-      voiceUri?: string | null
-    }
-    return {
-      photo: parsed.photo ?? null,
-      voiceUri: parsed.voiceUri ?? null,
-    }
-  } catch {
-    return { photo: null, voiceUri: null }
-  }
-}
-
-export function serializeTxAttachment(
-  photo?: string | null,
-  voiceUri?: string | null,
-): string | null {
-  if (!photo && !voiceUri) return null
-  return JSON.stringify({ photo: photo ?? null, voiceUri: voiceUri ?? null })
-}
-
-export const uploadsApi = {
-  image: (token: string, imageBase64: string, name?: string) =>
-    apiRequest<{ url: string; deleteUrl: string | null }>("/uploads/image", {
-      method: "POST",
-      token,
-      body: { imageBase64, name },
-    }),
-}
-
-export const categoriesApi = {
-  list: (token: string) =>
-    apiRequest<Category[]>("/categories", { token }),
-  upsert: (
-    token: string,
-    id: string,
-    body: {
-      name: string
-      icon: string
-      color: string
-      type: "income" | "expense"
-    },
-  ) =>
-    apiRequest<Category>(`/categories/${id}`, {
-      method: "PUT",
-      body,
-      token,
-    }),
-  remove: (token: string, id: string) =>
-    apiRequest<Category>(`/categories/${id}`, {
-      method: "DELETE",
-      token,
-    }),
-}
-
-export const peopleApi = {
-  list: (token: string) => apiRequest<Person[]>("/people", { token }),
-  upsert: (
-    token: string,
-    id: string,
-    body: { name: string; phone?: string | null; note?: string | null },
-  ) =>
-    apiRequest<Person>(`/people/${id}`, { method: "PUT", body, token }),
-  remove: (token: string, id: string) =>
-    apiRequest<Person>(`/people/${id}`, { method: "DELETE", token }),
-}
-
-export const savingAccountsApi = {
-  list: (token: string) =>
-    apiRequest<SavingAccount[]>("/saving-accounts", { token }),
-  upsert: (
-    token: string,
-    id: string,
-    body: {
-      name: string
-      balance?: number
-      goal?: number
-      icon?: string
-      color?: string
-    },
-  ) =>
-    apiRequest<SavingAccount>(`/saving-accounts/${id}`, {
-      method: "PUT",
-      body,
-      token,
-    }),
-  remove: (token: string, id: string) =>
-    apiRequest<SavingAccount>(`/saving-accounts/${id}`, {
-      method: "DELETE",
-      token,
-    }),
-}
-
-export const budgetsApi = {
-  list: (token: string) => apiRequest<Budget[]>("/budgets", { token }),
-  upsert: (
-    token: string,
-    id: string,
-    body: {
-      categoryId: string
-      dailyLimit?: number | null
-      monthlyLimit?: number | null
-      isEnforced?: boolean
-    },
-  ) =>
-    apiRequest<Budget>(`/budgets/${id}`, { method: "PUT", body, token }),
-  remove: (token: string, id: string) =>
-    apiRequest<Budget>(`/budgets/${id}`, { method: "DELETE", token }),
-}
-
-export const transactionsApi = {
-  list: (token: string, opts?: { limit?: number; offset?: number }) => {
-    const params = new URLSearchParams()
-    if (opts?.limit != null) params.set("limit", String(opts.limit))
-    if (opts?.offset != null) params.set("offset", String(opts.offset))
-    const q = params.toString()
-    return apiRequest<Transaction[]>(
-      `/transactions${q ? `?${q}` : ""}`,
-      { token },
-    )
-  },
-  upsert: (
-    token: string,
-    id: string,
-    body: {
-      title: string
-      amount: number
-      type: "income" | "expense"
-      categoryId?: string | null
-      personId?: string | null
-      savingsAccountId?: string | null
-      note?: string | null
-      attachment?: string | null
-      icon?: string | null
-      createdAt: string
-    },
-  ) =>
-    apiRequest<Transaction>(`/transactions/${id}`, {
-      method: "PUT",
-      body,
-      token,
-    }),
-  remove: (token: string, id: string) =>
-    apiRequest<Transaction>(`/transactions/${id}`, {
-      method: "DELETE",
-      token,
-    }),
-}
-
-export const playgroundApi = {
-  listAccounts: (token: string) =>
-    apiRequest<PlaygroundAccount[]>("/playground-accounts", { token }),
-  upsertAccount: (
-    token: string,
-    id: string,
-    body: {
-      name: string
-      type: "money" | "zero"
-      balance?: number
-      createdAt: string
-    },
-  ) =>
-    apiRequest<PlaygroundAccount>(`/playground-accounts/${id}`, {
-      method: "PUT",
-      body,
-      token,
-    }),
-  removeAccount: (token: string, id: string) =>
-    apiRequest<PlaygroundAccount>(`/playground-accounts/${id}`, {
-      method: "DELETE",
-      token,
-    }),
-  upsertTransaction: (
-    token: string,
-    id: string,
-    body: {
-      accountId: string
-      title: string
-      amount: number
-      type: "income" | "expense"
-      note?: string | null
-      icon?: string | null
-      categoryName?: string | null
-      categoryColor?: string | null
-      createdAt: string
-    },
-  ) =>
-    apiRequest<PlaygroundTransaction>(`/playground-transactions/${id}`, {
-      method: "PUT",
-      body,
-      token,
-    }),
-  removeTransaction: (token: string, id: string) =>
-    apiRequest<PlaygroundTransaction>(`/playground-transactions/${id}`, {
-      method: "DELETE",
-      token,
-    }),
-}
-
-export const settingsApi = {
-  get: (token: string) => apiRequest<Settings>("/settings", { token }),
-  patch: (
-    token: string,
-    body: Partial<{
-      theme: string
-      language: string
-      currency: string
-      onboardingCompleted: boolean
-      balance: number
-      allowNegativeBalance: boolean
-      homeInputMode: string
-    }>,
-  ) =>
-    apiRequest<Settings>("/settings", {
-      method: "PATCH",
-      body,
-      token,
-    }),
+  sessionId: string
+  sentAt: string
+  receivedAt: string | null
+  platform: string | null
+  appVersion: string | null
+  userName: string | null
+  deviceId: string | null
+  eventCount: number
+  events: AnalyticsEvent[]
 }
 
 export const analyticsApi = {
-  overview: (token: string, period: AnalyticsPeriod | string = "30d") =>
-    apiRequest<{
-      balance: number
-      period: string
-      income: number
-      expenses: number
-      saved: number
-      changes: { income: number; expenses: number; saved: number }
-    }>(`/analytics/overview?period=${period}`, { token }),
-  weekly: (token: string, period: AnalyticsPeriod | string = "7d") =>
-    apiRequest<{
-      balance: number
-      period: string
-      weeklyChart: Array<{
-        day: string
-        savings: number
-        income: number
-        expenses: number
-        idle: number
-        total: number
-      }>
-    }>(`/analytics/weekly?period=${period}`, { token }),
-  costBreakdown: (token: string, period: AnalyticsPeriod | string = "30d") =>
-    apiRequest<{
-      total: number
-      period: string
-      costCategories: Array<{
-        name: string
-        percent: number
-        color: string
-        amount: number
-      }>
-    }>(`/analytics/cost-breakdown?period=${period}`, { token }),
-  spendingLimit: (token: string) =>
-    apiRequest<{ spent: number; limit: number }>(
-      "/analytics/spending-limit",
-      { token },
+  summary: (token: string) =>
+    apiRequest<AnalyticsSummary>("/analytics/summary", { token }),
+  batches: (token: string, limit = 50) =>
+    apiRequest<AnalyticsBatchRecord[]>(`/analytics/batches?limit=${limit}`, { token }),
+}
+
+export type WishlistPlatform = "ios" | "android" | "both"
+
+export const notificationsApi = {
+  send: (token: string, body: NotificationPayload) =>
+    apiRequest<{ ok: boolean; sent?: number; failed?: number; messageId?: string }>(
+      "/notifications/send",
+      { method: "POST", body, token },
     ),
-  goals: (token: string) =>
-    apiRequest<{
-      goals: Array<{
-        id: string
-        name: string
-        current: number
-        target: number
-        left: string
-        color?: string
-        icon?: string
-      }>
-    }>("/analytics/goals", { token }),
-  recentTransactions: (token: string) =>
-    apiRequest<{
-      transactions: Array<{
-        id: string
-        initials: string
-        color: string
-        name: string
-        date: string
-        amount: number
-        type: "income" | "expense"
-        categoryName: string | null
-        categoryIcon: string | null
-        status: "Completed" | "Declined"
-      }>
-    }>("/analytics/transactions/recent", { token }),
-  financialHealth: (token: string, period: AnalyticsPeriod | string = "30d") =>
-    apiRequest<{ amount: number; change: number; percentSaved: number }>(
-      `/analytics/financial-health?period=${period}`,
-      { token },
-    ),
+  schedule: (
+    token: string,
+    body: NotificationPayload & { scheduledAt: string },
+  ) =>
+    apiRequest<ScheduledNotification>("/notifications/schedule", {
+      method: "POST",
+      body,
+      token,
+    }),
+  listScheduled: (token: string) =>
+    apiRequest<ScheduledNotification[]>("/notifications/scheduled", { token }),
+  cancelScheduled: (token: string, id: string) =>
+    apiRequest<ScheduledNotification>(`/notifications/scheduled/${id}`, {
+      method: "DELETE",
+      token,
+    }),
+  createRecurring: (
+    token: string,
+    body: NotificationPayload & {
+      recurrence: RecurrenceType
+      startsAt: string
+      endsAt?: string | null
+      timezone?: string
+    },
+  ) =>
+    apiRequest<RecurringNotification>("/notifications/recurring", {
+      method: "POST",
+      body,
+      token,
+    }),
+  listRecurring: (token: string) =>
+    apiRequest<RecurringNotification[]>("/notifications/recurring", { token }),
+  cancelRecurring: (token: string, id: string) =>
+    apiRequest<RecurringNotification>(`/notifications/recurring/${id}`, {
+      method: "DELETE",
+      token,
+    }),
 }

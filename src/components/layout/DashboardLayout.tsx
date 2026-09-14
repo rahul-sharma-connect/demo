@@ -1,47 +1,63 @@
-import { useEffect, useState, type ReactNode } from "react"
-import { Sidebar } from "./Sidebar"
-import { Header } from "./Header"
+import { NavLink, Outlet } from "react-router-dom"
+import { Activity, Bell, LogOut, MessageSquare, Users } from "lucide-react"
+import { useAuth } from "../../auth/AuthContext"
 
-type DashboardLayoutProps = {
-  main: ReactNode
-  right?: ReactNode
-}
+const navClass = ({ isActive }: { isActive: boolean }) =>
+  [
+    "flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition",
+    isActive
+      ? "bg-primary/10 text-primary"
+      : "text-slate-600 hover:bg-slate-100 hover:text-ink",
+  ].join(" ")
 
-export function DashboardLayout({ main, right }: DashboardLayoutProps) {
-  const [collapsed, setCollapsed] = useState(false)
-
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 900px)")
-    const apply = () => setCollapsed(mq.matches)
-    apply()
-    mq.addEventListener("change", apply)
-    return () => mq.removeEventListener("change", apply)
-  }, [])
+export function DashboardLayout() {
+  const { user, logout } = useAuth()
 
   return (
-    <div className="relative flex min-h-screen bg-mist">
-      <div
-        className="pointer-events-none absolute inset-0 overflow-hidden"
-        aria-hidden="true"
-      >
-        <div className="absolute -top-24 left-1/3 h-[380px] w-[380px] rounded-full bg-sky-200/40 blur-[100px]" />
-        <div className="absolute top-1/2 -right-20 h-[320px] w-[320px] rounded-full bg-blue-200/30 blur-[110px]" />
-      </div>
-
-      <Sidebar collapsed={collapsed} onToggle={() => setCollapsed((c) => !c)} />
-
-      <div className="relative z-10 flex min-w-0 flex-1 flex-col">
-        <Header />
-
-        <div className="flex flex-1 flex-col gap-4 px-5 pb-8 lg:flex-row lg:gap-5 lg:px-6">
-          <main className="min-w-0 flex-1 space-y-4">{main}</main>
-          {right != null && (
-            <aside className="w-full shrink-0 space-y-4 xl:w-[300px]">
-              {right}
-            </aside>
-          )}
+    <div className="flex min-h-screen bg-mist text-ink">
+      <aside className="flex w-64 shrink-0 flex-col border-r border-border bg-white px-4 py-6">
+        <div className="mb-8 px-2">
+          <p className="font-display text-lg font-extrabold tracking-tight">
+            Yeti<span className="text-primary">Wize</span>
+          </p>
+          <p className="mt-1 text-xs font-medium text-muted">Admin Dashboard</p>
         </div>
-      </div>
+
+        <nav className="flex-1 space-y-1">
+          <NavLink to="/dashboard/notifications" className={navClass} end>
+            <Bell size={18} />
+            Notifications
+          </NavLink>
+          <NavLink to="/dashboard/users" className={navClass} end>
+            <Users size={18} />
+            Users
+          </NavLink>
+          <NavLink to="/dashboard/feedbacks" className={navClass} end>
+            <MessageSquare size={18} />
+            Feedbacks
+          </NavLink>
+          <NavLink to="/dashboard/usage" className={navClass} end>
+            <Activity size={18} />
+            Usage
+          </NavLink>
+        </nav>
+
+        <div className="mt-auto border-t border-border pt-4">
+          <p className="truncate px-2 text-xs font-medium text-muted">{user?.email}</p>
+          <button
+            type="button"
+            onClick={() => void logout()}
+            className="mt-3 flex w-full items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-100"
+          >
+            <LogOut size={16} />
+            Sign out
+          </button>
+        </div>
+      </aside>
+
+      <main className="flex-1 overflow-auto p-6 sm:p-8">
+        <Outlet />
+      </main>
     </div>
   )
 }

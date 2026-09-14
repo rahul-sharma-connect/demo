@@ -5,24 +5,34 @@ interface LogoProps {
   className?: string
   markOnly?: boolean
   light?: boolean
+  compact?: boolean
 }
 
-export function Logo({ className, markOnly = false, light = false }: LogoProps) {
+export function Logo({
+  className,
+  markOnly = false,
+  light = false,
+  compact = false,
+}: LogoProps) {
   return (
-    <span className={cn('inline-flex items-center gap-2.5', className)}>
+    <span className={cn('inline-flex items-center gap-2', className)}>
       <img
         src={images.icon}
         alt=""
-        width={40}
-        height={40}
-        className="h-10 w-10 rounded-xl object-cover shadow-lg shadow-primary/20"
+        width={compact ? 32 : 40}
+        height={compact ? 32 : 40}
+        className={cn(
+          'rounded-lg object-cover',
+          compact ? 'h-8 w-8' : 'h-10 w-10 shadow-lg shadow-primary/20',
+        )}
         aria-hidden="true"
       />
       {!markOnly ? (
         <span
           className={cn(
-            'text-lg font-bold tracking-tight',
-            light ? 'text-white' : 'text-slate-900',
+            'font-bold tracking-tight',
+            compact ? 'text-base' : 'text-lg',
+            light ? 'text-white' : 'text-ink',
           )}
         >
           YetiWize

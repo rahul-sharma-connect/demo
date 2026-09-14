@@ -1,0 +1,47 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /device_tokens/{deviceId} {
+      allow read: if false;
+      allow create, update: if
+        request.resource.data.keys().hasAll(['token', 'platform', 'lastSeenAt'])
+        && request.resource.data.token is string
+        && request.resource.data.platform is string
+        && request.resource.data.token.size() > 0
+        && request.resource.data.platform.size() > 0
+        && request.resource.data.platform.size() <= 32;
+      allow delete: if
+        resource.data.token is string
+        && resource.data.token.size() > 0;
+    }
+
+    match /feedbacks/{feedbackId} {
+      allow read: if false;
+      allow create: if
+        request.resource.data.keys().hasAll(['topic', 'message', 'status', 'createdAt'])
+        && request.resource.data.message is string
+        && request.resource.data.message.size() >= 5
+        && request.resource.data.message.size() <= 5000
+        && request.resource.data.topic in ['feature', 'bug', 'improvement', 'other']
+        && request.resource.data.status == 'new';
+      allow update, delete: if false;
+    }
+
+    match /wishlist/{entryId} {
+      allow create: if
+        request.resource.data.keys().hasAll(['email', 'platform', 'source', 'device', 'createdAt'])
+        && request.resource.data.email is string
+        && request.resource.data.email.matches('^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$')
+        && request.resource.data.platform in ['ios', 'android', 'both']
+        && request.resource.data.source == 'yetiwize-web'
+        && request.resource.data.device is map;
+
+      allow read: if request.auth != null
+        && request.auth.token.email != null
+        && request.auth.token.email.lower() == 'sara@yetiwize.com';
+
+      allow update, delete: if false;
+    }
+  }
+}

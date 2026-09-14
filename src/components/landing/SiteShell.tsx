@@ -1,89 +1,83 @@
-import { useState, type ReactNode } from 'react'
-import { Link } from 'react-router-dom'
-import { Menu, X } from 'lucide-react'
+import { useRef, useState, type ReactNode } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { Menu, X, Bell } from 'lucide-react'
 import { Logo } from '@/assets/logos/Logo'
 import { SITE } from '@/utils/seo'
-import { NoiseOverlay } from '@/components/landing/NoiseOverlay'
+import { WishlistProvider, useWishlist } from '@/context/WishlistContext'
+import { PageContainer } from './shared'
 
 const links = [
-  { href: '#top', label: 'Home' },
   { href: '#features', label: 'Features' },
   { href: '#how', label: 'How it works' },
-  { href: '#platforms', label: 'Platforms' },
   { href: '#about', label: 'About' },
   { href: '#faq', label: 'FAQ' },
 ] as const
 
-export function SiteNav() {
+function SiteNavInner() {
   const [open, setOpen] = useState(false)
+  const { openWishlist } = useWishlist()
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-white/40 bg-white/60 backdrop-blur-2xl">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:px-8">
+    <header className="sticky top-0 z-50 border-b border-white/8 bg-mist/90 backdrop-blur-md">
+      <PageContainer wide className="flex h-16 items-center justify-between">
         <a href="#top" onClick={() => setOpen(false)}>
-          <Logo />
+          <Logo compact />
         </a>
 
-        <nav className="hidden items-center gap-0.5 lg:flex" aria-label="Primary">
+        <nav className="hidden items-center gap-1 md:flex" aria-label="Primary">
           {links.map((link) => (
             <a
               key={link.href}
               href={link.href}
-              className="rounded-full px-3 py-2 text-sm font-medium text-slate-500 transition hover:bg-sky-50 hover:text-sky-700"
+              className="rounded-lg px-3 py-2 text-sm text-slate-400 transition hover:bg-white/5 hover:text-white"
             >
               {link.label}
             </a>
           ))}
-          <Link
-            to="/login?mode=register"
-            className="ml-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-dark"
-          >
-            Sign up
-          </Link>
-        </nav>
-
-        <div className="flex items-center gap-2 lg:hidden">
-          <Link
-            to="/login?mode=register"
-            className="rounded-full bg-primary px-3.5 py-2 text-sm font-semibold text-white"
-          >
-            Sign up
-          </Link>
           <button
             type="button"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-sky-100/80 bg-white/70 text-ink"
-            aria-label={open ? 'Close menu' : 'Open menu'}
-            onClick={() => setOpen((v) => !v)}
+            onClick={() => openWishlist()}
+            className="ml-2 inline-flex items-center gap-1.5 rounded-lg bg-violet-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-violet-500"
           >
-            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            <Bell className="h-4 w-4" aria-hidden="true" />
+            Join wishlist
           </button>
-        </div>
-      </div>
+        </nav>
+
+        <button
+          type="button"
+          className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 text-slate-400 md:hidden"
+          aria-label={open ? 'Close menu' : 'Open menu'}
+          onClick={() => setOpen((v) => !v)}
+        >
+          {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+        </button>
+      </PageContainer>
 
       {open ? (
-        <nav
-          className="border-t border-sky-100/80 bg-white/90 px-5 py-4 backdrop-blur-xl lg:hidden"
-          aria-label="Mobile"
-        >
-          <div className="flex flex-col gap-1">
+        <nav className="border-t border-white/8 md:hidden" aria-label="Mobile">
+          <PageContainer wide className="flex flex-col gap-1 py-3">
             {links.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
                 onClick={() => setOpen(false)}
-                className="rounded-xl px-4 py-3 text-sm font-semibold text-slate-600"
+                className="rounded-lg px-3 py-2.5 text-sm text-slate-300 hover:bg-white/5"
               >
                 {link.label}
               </a>
             ))}
-            <Link
-              to="/login?mode=register"
-              onClick={() => setOpen(false)}
-              className="rounded-xl px-4 py-3 text-sm font-semibold text-primary"
+            <button
+              type="button"
+              onClick={() => {
+                setOpen(false)
+                openWishlist()
+              }}
+              className="rounded-lg px-3 py-2.5 text-left text-sm font-semibold text-violet-400"
             >
-              Sign up
-            </Link>
-          </div>
+              Join wishlist
+            </button>
+          </PageContainer>
         </nav>
       ) : null}
     </header>
@@ -91,43 +85,64 @@ export function SiteNav() {
 }
 
 export function SiteFooter() {
+  const navigate = useNavigate()
+  const [clicks, setClicks] = useState(0)
+  const resetTimer = useRef<number | null>(null)
+
+  function handleBrandClick() {
+    if (resetTimer.current) window.clearTimeout(resetTimer.current)
+    const next = clicks + 1
+    if (next >= 5) {
+      setClicks(0)
+      navigate('/admin/login')
+      return
+    }
+    setClicks(next)
+    resetTimer.current = window.setTimeout(() => setClicks(0), 2500)
+  }
+
   return (
-    <footer className="relative z-10 border-t border-sky-100/80 bg-white/50 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-5 py-10 text-sm text-slate-400 sm:flex-row sm:px-8">
-        <div className="text-center sm:text-left">
-          <p className="font-semibold text-slate-600">YetiWize</p>
+    <footer className="border-t border-white/8 bg-[#08080c]/40">
+      <PageContainer wide className="flex flex-col gap-4 py-10 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <button
+            type="button"
+            onClick={handleBrandClick}
+            className="font-semibold text-slate-300 select-none"
+            aria-label="YetiWize"
+          >
+            YetiWize
+          </button>
           <p className="mt-1">{SITE.tagline}</p>
-          <p className="mt-2">© {new Date().getFullYear()} YetiWize · Coming soon</p>
         </div>
-        <div className="flex flex-wrap justify-center gap-5">
-          <a href="#features" className="hover:text-sky-600">
-            Features
-          </a>
-          <a href="#platforms" className="hover:text-sky-600">
-            Platforms
-          </a>
-          <Link to="/privacy" className="hover:text-sky-600">
+        <div className="flex flex-wrap gap-5">
+          <Link to="/privacy" className="hover:text-slate-300">
             Privacy
           </Link>
-          <Link to="/terms" className="hover:text-sky-600">
+          <Link to="/terms" className="hover:text-slate-300">
             Terms
           </Link>
-          <a href={`mailto:${SITE.email}`} className="hover:text-sky-600">
+          <a href={`mailto:${SITE.email}`} className="hover:text-slate-300">
             Contact
           </a>
         </div>
-      </div>
+      </PageContainer>
     </footer>
   )
 }
 
+export function SiteNav() {
+  return <SiteNavInner />
+}
+
 export function SiteShell({ children }: { children: ReactNode }) {
   return (
-    <div className="relative flex min-h-screen flex-col overflow-x-hidden bg-mist text-ink">
-      <NoiseOverlay />
-      <SiteNav />
-      <main className="relative z-10 flex-1 pt-16">{children}</main>
-      <SiteFooter />
-    </div>
+    <WishlistProvider>
+      <div className="relative flex min-h-screen flex-col overflow-x-hidden bg-mist text-ink">
+        <SiteNavInner />
+        <main className="relative z-10 flex-1">{children}</main>
+        <SiteFooter />
+      </div>
+    </WishlistProvider>
   )
 }

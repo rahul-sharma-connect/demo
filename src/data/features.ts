@@ -9,100 +9,146 @@ import {
   WifiOff,
   Cloud,
   BarChart3,
-  Sparkles,
   Tags,
   Layers,
-  LineChart,
+  History,
   Moon,
   FileSpreadsheet,
   ShieldCheck,
+  LayoutDashboard,
 } from 'lucide-react'
 
 export interface Feature {
   title: string
   description: string
   icon: LucideIcon
+  category: 'track' | 'plan' | 'sync' | 'insights'
+  featured?: boolean
 }
 
 export const features: Feature[] = [
   {
     title: 'Expense Tracking',
-    description: 'Capture every rupee with lightning-fast entry and smart receipts.',
+    description: 'Record everyday spending quickly and see exactly where your money is going.',
     icon: Wallet,
+    category: 'track',
+    featured: true,
   },
   {
     title: 'Income Tracking',
-    description: 'Monitor salary, side hustles, and irregular income in one view.',
+    description: 'Log salary, freelance work, and other income alongside your expenses.',
     icon: TrendingUp,
+    category: 'track',
   },
   {
-    title: 'Budget Planning',
-    description: 'Flexible envelopes that adapt as your month unfolds.',
-    icon: PiggyBank,
-  },
-  {
-    title: 'Goals',
-    description: 'Set milestones for travel, emergency funds, and big purchases.',
-    icon: Target,
-  },
-  {
-    title: 'Savings',
-    description: 'Automatic savings rules that quietly grow your nest egg.',
-    icon: Landmark,
-  },
-  {
-    title: 'Recurring Transactions',
-    description: 'Never miss rent, EMIs, or subscriptions again.',
-    icon: RefreshCw,
-  },
-  {
-    title: 'Offline First',
-    description: 'Log spends on the metro—sync when you reconnect.',
-    icon: WifiOff,
-  },
-  {
-    title: 'Cloud Sync',
-    description: 'Encrypted sync across phone, tablet, and desktop.',
-    icon: Cloud,
-  },
-  {
-    title: 'Financial Reports',
-    description: 'Beautiful monthly and yearly reports you will actually read.',
-    icon: BarChart3,
-  },
-  {
-    title: 'AI Insights',
-    description: 'Personalized tips that spot leaks and celebrate progress.',
-    icon: Sparkles,
-  },
-  {
-    title: 'Smart Categories',
-    description: 'AI that learns your habits and categorizes with precision.',
+    title: 'Category Organization',
+    description: 'Sort transactions into food, shopping, transportation, bills, entertainment, and more.',
     icon: Tags,
+    category: 'track',
   },
   {
     title: 'Multiple Wallets',
-    description: 'Cash, cards, UPI, and investment accounts—unified.',
+    description: 'Keep separate wallets for cash, bank accounts, digital payments, and savings.',
     icon: Layers,
+    category: 'track',
+    featured: true,
   },
   {
-    title: 'Net Worth',
-    description: 'Assets minus liabilities with a clear growth trajectory.',
-    icon: LineChart,
+    title: 'Transaction History',
+    description: 'Review past income and expenses whenever you need a clearer picture.',
+    icon: History,
+    category: 'track',
   },
   {
-    title: 'Dark Mode',
-    description: 'A calm night theme designed for late-night money checks.',
-    icon: Moon,
+    title: 'Recurring Transactions',
+    description: 'Track regular bills, rent, subscriptions, and other repeating payments.',
+    icon: RefreshCw,
+    category: 'track',
+  },
+  {
+    title: 'Budget Limits',
+    description: 'Set daily or monthly spending limits for categories and monitor your progress.',
+    icon: PiggyBank,
+    category: 'plan',
+    featured: true,
+  },
+  {
+    title: 'Savings Goals',
+    description: 'Save toward a laptop, trip, emergency fund, or any target with visual progress.',
+    icon: Target,
+    category: 'plan',
+  },
+  {
+    title: 'Savings Vaults',
+    description: 'Add funds gradually and watch your goals become measurable over time.',
+    icon: Landmark,
+    category: 'plan',
+  },
+  {
+    title: 'Balance Overview',
+    description: 'See your current balance and how much is coming in versus going out.',
+    icon: LayoutDashboard,
+    category: 'insights',
+  },
+  {
+    title: 'Spending Patterns',
+    description: 'Notice where money may be disappearing and adjust before you overspend.',
+    icon: BarChart3,
+    category: 'insights',
+  },
+  {
+    title: 'Offline First',
+    description: 'Manage records on your phone without needing constant internet access.',
+    icon: WifiOff,
+    category: 'sync',
+  },
+  {
+    title: 'Cloud Sync',
+    description: 'Optional sync to keep your records available across devices.',
+    icon: Cloud,
+    category: 'sync',
   },
   {
     title: 'Export CSV',
-    description: 'Your data, your rules—export anytime for taxes or analysis.',
+    description: 'Export your data anytime for personal records or analysis.',
     icon: FileSpreadsheet,
+    category: 'sync',
   },
   {
     title: 'Data Privacy',
-    description: 'End-to-end encryption. We never sell your financial data.',
+    description: 'Your financial records stay yours — we do not sell your personal data.',
     icon: ShieldCheck,
+    category: 'sync',
+  },
+  {
+    title: 'Dark Mode',
+    description: 'A modern, friendly interface designed for comfortable everyday use.',
+    icon: Moon,
+    category: 'sync',
   },
 ]
+
+export const featureGroups = [
+  {
+    id: 'track' as const,
+    label: 'Track & organize',
+    description: 'Record income and expenses and keep every wallet in one place.',
+  },
+  {
+    id: 'plan' as const,
+    label: 'Control & save',
+    description: 'Set spending limits and work toward goals that matter to you.',
+  },
+  {
+    id: 'sync' as const,
+    label: 'Reliable & private',
+    description: 'Offline-first tracking with optional sync and data you control.',
+  },
+  {
+    id: 'insights' as const,
+    label: 'Understand',
+    description: 'Simple overviews that help you stay aware without overwhelm.',
+  },
+] as const
+
+export const featuredFeatures = features.filter((f) => f.featured)
